@@ -1,0 +1,5 @@
+= cloudscale-loadbalancer-controller
+
+cloudscale-loadbalancer-controller is a Commodore component to manage cloudscale-loadbalancer-controller.
+
+See the xref:references/parameters.adoc[parameters] reference for further details.

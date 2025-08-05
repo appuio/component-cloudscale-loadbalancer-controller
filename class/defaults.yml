@@ -1,0 +1,5 @@
+parameters:
+  cloudscale_loadbalancer_controller:
+    =_metadata:
+      multi_tenant: true
+    namespace: syn-cloudscale-loadbalancer-controller
