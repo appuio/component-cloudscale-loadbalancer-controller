@@ -1,3 +1,40 @@
 # Overwrite parameters here
 
-# parameters: {...}
+parameters:
+  cloudscale_loadbalancer_controller:
+    extra_env:
+      cloudscale_loadbalancer_controller:
+        CLOUDSCALE_API_TOKEN:
+          secretKeyRef:
+            name: cloudscale-api-token
+            key: token
+
+    secrets:
+      cloudscale-api-token:
+        stringData:
+          token: notsosecret
+
+    loadbalancers:
+      api:
+        spec:
+          _pools:
+            http:
+              frontend:
+                port: 80
+              backend:
+                nodeSelector:
+                  matchLabels:
+                    node-role.kubernetes.io/infra: ""
+                port: 80
+                healthMonitor:
+                  type: TCP
+            https:
+              frontend:
+                port: 443
+              backend:
+                nodeSelector:
+                  matchLabels:
+                    node-role.kubernetes.io/infra: ""
+                port: 443
+                healthMonitor:
+                  type: TCP

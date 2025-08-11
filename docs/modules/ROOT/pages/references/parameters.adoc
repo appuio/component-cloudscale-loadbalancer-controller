@@ -6,14 +6,163 @@ The parent key for all of the following parameters is `cloudscale_loadbalancer_c
 
 [horizontal]
 type:: string
-default:: `syn-cloudscale-loadbalancer-controller`
+default:: `appuio-cloudscale-loadbalancer-controller`
 
 The namespace in which to deploy this component.
 
+== `manifest_version`
+
+[horizontal]
+type:: string
+default:: `${cloudscale_loadbalancer_controller:images:cloudscale_loadbalancer_controller:tag}`
+
+The version of the upstream kustomize manifest to use.
+
+Defaults to the `cloudscale_loadbalancer_controller` image tag.
+
+== `kustomize_input`
+
+[horizontal]
+type:: dict
+default::
++
+[source,yaml]
+----
+namespace: ${cloudscale_loadbalancer_controller:namespace}
+----
+
+Additional input for kustomize can be specified here.
+
+Injects the component namespace into the kustomize build by default.
+
+== `secrets`
+
+[horizontal]
+type:: dict
+default:: `{}`
+example::
++
+[source,yaml]
+----
+cloudscale-api-token:
+  stringData:
+    token: notsosecret
+----
+
+A list of secrets to be made available to the component.
+The dictionary keys are the secret names, and the values are the secret manifests.
+
+== `loadbalancers`
+
+[horizontal]
+type:: dict
+default:: {}
+example::
++
+[source,yaml]
+----
+api:
+  spec:
+    _pools:
+      https:
+        frontend:
+          port: 443
+        backend:
+          nodeSelector:
+            matchLabels:
+              node-role.kubernetes.io/infra: ""
+          port: 443
+          healthMonitor:
+            type: TCP
+----
+
+Allows specifying load balancers.
+The dictionary keys are the load balancer names, and the values are the load balancer manifests.
+
+`.spec._pools` allows defining the load balancer pool configurations that can be overridden in the hierarchy.
+The `.spec._pools` dictionary keys are used as the pool names while the values are the pool configurations.
+`.spec._pools` are merged into the upstream `.spec.pools` configurations.
+
+== `images`
+
+[horizontal]
+type:: dict
+default:: See https://github.com/appuio/component-cloudscale-loadbalancer-controller/blob/master/class/defaults.yml[`class/defaults.yml`]
+
+A list of images to be used by the component.
+
+== `extra_env`
+
+[horizontal]
+type:: dict
+default::
++
+[source,yaml]
+----
+cloudscale_loadbalancer_controller: {}
+----
+example::
++
+[source,yaml]
+----
+cloudscale_loadbalancer_controller:
+  CLOUDSCALE_API_TOKEN:
+    secretKeyRef:
+      name: cloudscale-api-token
+      key: token
+----
+
+A list of environment variables to be injected into the containers.
+
+Can be used to inject the required `CLOUDSCALE_API_TOKEN` environment variable.
+
+== `resources`
+
+[horizontal]
+type:: dict
+default::
++
+[source,yaml]
+----
+cloudscale_loadbalancer_controller:
+  requests:
+    cpu: 10m
+    memory: 32Mi
+  limits:
+    cpu: null
+    memory: 128Mi
+----
+
+Allows customizing the resource requests and limits for the component.
 
 == Example
 
 [source,yaml]
 ----
-namespace: example-namespace
+extra_env:
+  cloudscale_loadbalancer_controller:
+    CLOUDSCALE_API_TOKEN:
+      secretKeyRef:
+        name: cloudscale-api-token
+        key: token
+
+secrets:
+  cloudscale-api-token:
+    stringData:
+      token: notsosecret
+
+loadbalancers:
+  api:
+    spec:
+      _pools:
+        https:
+          frontend:
+            port: 443
+          backend:
+            nodeSelector:
+              matchLabels:
+                node-role.kubernetes.io/infra: ""
+            port: 443
+            healthMonitor:
+              type: TCP
 ----

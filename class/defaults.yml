@@ -2,4 +2,30 @@ parameters:
   cloudscale_loadbalancer_controller:
     =_metadata:
       multi_tenant: true
-    namespace: syn-cloudscale-loadbalancer-controller
+    namespace: appuio-cloudscale-loadbalancer-controller
+
+    manifest_version: ${cloudscale_loadbalancer_controller:images:cloudscale_loadbalancer_controller:tag}
+    kustomize_input:
+      namespace: ${cloudscale_loadbalancer_controller:namespace}
+
+    secrets: {}
+
+    loadbalancers: {}
+
+    images:
+      cloudscale_loadbalancer_controller:
+        registry: ghcr.io
+        repository: appuio/cloudscale-loadbalancer-controller
+        tag: v0.1.0
+
+    extra_env:
+      cloudscale_loadbalancer_controller: {}
+
+    resources:
+      cloudscale_loadbalancer_controller:
+        requests:
+          cpu: 10m
+          memory: 32Mi
+        limits:
+          cpu: null
+          memory: 128Mi

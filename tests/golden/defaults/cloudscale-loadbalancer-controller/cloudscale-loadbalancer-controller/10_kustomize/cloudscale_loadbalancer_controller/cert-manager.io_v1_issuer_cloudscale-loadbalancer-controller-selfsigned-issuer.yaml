@@ -1,0 +1,10 @@
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  labels:
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/name: cloudscale-loadbalancer-controller
+  name: cloudscale-loadbalancer-controller-selfsigned-issuer
+  namespace: appuio-cloudscale-loadbalancer-controller
+spec:
+  selfSigned: {}

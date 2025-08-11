@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/name: cloudscale-loadbalancer-controller
+  name: cloudscale-loadbalancer-controller-webhook-service
+  namespace: appuio-cloudscale-loadbalancer-controller
+spec:
+  ports:
+  - port: 443
+    protocol: TCP
+    targetPort: 9443
+  selector:
+    app.kubernetes.io/name: cloudscale-loadbalancer-controller
+    control-plane: controller-manager

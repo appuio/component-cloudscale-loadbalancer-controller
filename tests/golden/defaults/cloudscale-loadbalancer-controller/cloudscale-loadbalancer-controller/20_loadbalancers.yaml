@@ -1,0 +1,27 @@
+apiVersion: cloudscale.appuio.io/v1beta1
+kind: LoadBalancer
+metadata:
+  name: api
+  namespace: appuio-cloudscale-loadbalancer-controller
+spec:
+  pools:
+    - backend:
+        healthMonitor:
+          type: TCP
+        nodeSelector:
+          matchLabels:
+            node-role.kubernetes.io/infra: ''
+        port: 80
+      frontend:
+        port: 80
+      name: http
+    - backend:
+        healthMonitor:
+          type: TCP
+        nodeSelector:
+          matchLabels:
+            node-role.kubernetes.io/infra: ''
+        port: 443
+      frontend:
+        port: 443
+      name: https
