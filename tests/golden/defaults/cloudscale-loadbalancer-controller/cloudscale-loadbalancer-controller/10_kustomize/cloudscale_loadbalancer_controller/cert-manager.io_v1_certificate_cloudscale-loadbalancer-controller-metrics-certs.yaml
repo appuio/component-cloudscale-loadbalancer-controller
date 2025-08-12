@@ -1,0 +1,16 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  labels:
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/name: cloudscale-loadbalancer-controller
+  name: cloudscale-loadbalancer-controller-metrics-certs
+  namespace: appuio-cloudscale-loadbalancer-controller
+spec:
+  dnsNames:
+  - cloudscale-loadbalancer-controller-metrics-service.appuio-cloudscale-loadbalancer-controller.svc
+  - cloudscale-loadbalancer-controller-metrics-service.appuio-cloudscale-loadbalancer-controller.svc.cluster.local
+  issuerRef:
+    kind: Issuer
+    name: cloudscale-loadbalancer-controller-selfsigned-issuer
+  secretName: metrics-server-cert

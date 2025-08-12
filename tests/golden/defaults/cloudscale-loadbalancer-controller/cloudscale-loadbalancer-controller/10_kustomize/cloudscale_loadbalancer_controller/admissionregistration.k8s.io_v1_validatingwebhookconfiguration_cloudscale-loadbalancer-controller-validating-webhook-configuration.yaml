@@ -1,0 +1,27 @@
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingWebhookConfiguration
+metadata:
+  annotations:
+    cert-manager.io/inject-ca-from: appuio-cloudscale-loadbalancer-controller/cloudscale-loadbalancer-controller-serving-cert
+  name: cloudscale-loadbalancer-controller-validating-webhook-configuration
+webhooks:
+- admissionReviewVersions:
+  - v1
+  clientConfig:
+    service:
+      name: cloudscale-loadbalancer-controller-webhook-service
+      namespace: appuio-cloudscale-loadbalancer-controller
+      path: /validate-cloudscale-appuio-io-v1beta1-loadbalancer
+  failurePolicy: Fail
+  name: vloadbalancer-v1beta1.kb.io
+  rules:
+  - apiGroups:
+    - cloudscale.appuio.io
+    apiVersions:
+    - v1beta1
+    operations:
+    - CREATE
+    - UPDATE
+    resources:
+    - loadbalancers
+  sideEffects: None

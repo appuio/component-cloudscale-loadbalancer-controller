@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    app.kubernetes.io/name: appuio-cloudscale-loadbalancer-controller
+    name: appuio-cloudscale-loadbalancer-controller
+  name: appuio-cloudscale-loadbalancer-controller
