@@ -16,7 +16,7 @@ parameters:
       cloudscale_loadbalancer_controller:
         registry: ghcr.io
         repository: appuio/cloudscale-loadbalancer-controller
-        tag: v0.1.0
+        tag: v0.1.1
 
     extra_env:
       cloudscale_loadbalancer_controller: {}
