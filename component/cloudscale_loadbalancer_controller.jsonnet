@@ -25,6 +25,9 @@ local cloudscale_loadbalancer_controller = com.Kustomization(
     },
   },
   {
+    resources: [
+      'https://raw.githubusercontent.com/appuio/cloudscale-loadbalancer-controller/%s/config/rbac/loadbalancer_viewer_role.yaml' % [ params.manifest_version ],
+    ],
     // Inner kustomization layers are immutable, so we need to re-replace the namespace after changing it in an outer layer
     replacements: [
       {
