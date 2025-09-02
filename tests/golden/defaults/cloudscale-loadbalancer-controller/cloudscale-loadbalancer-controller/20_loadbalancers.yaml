@@ -4,6 +4,8 @@ metadata:
   name: api
   namespace: appuio-cloudscale-loadbalancer-controller
 spec:
+  floatingIPAddresses:
+    - cidr: 192.0.2.100/32
   pools:
     - backend:
         healthMonitor:
