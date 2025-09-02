@@ -17,6 +17,8 @@ parameters:
     loadbalancers:
       api:
         spec:
+          floatingIPAddresses:
+            - cidr: 192.0.2.100/32
           _pools:
             http:
               frontend:

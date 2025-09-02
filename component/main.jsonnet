@@ -30,27 +30,25 @@ local secret = function(name) {
   },
 };
 
-local loadbalancers = [
-  {
-    local value = params.loadbalancers[name],
-    apiVersion: 'cloudscale.appuio.io/v1beta1',
-    kind: 'LoadBalancer',
-    metadata: {
-      name: name,
-      namespace: params.namespace,
-    },
-    spec+: {
-      _pools+:: [],
-      pools+: [
-        value.spec._pools[poolName] {
-          name: poolName,
-        }
-        for poolName in std.objectFields(value.spec._pools)
-      ],
-    },
-  }
-  for name in std.objectFields(params.loadbalancers)
-];
+local LoadBalancer(name) = {
+  apiVersion: 'cloudscale.appuio.io/v1beta1',
+  kind: 'LoadBalancer',
+  metadata: {
+    name: name,
+    namespace: params.namespace,
+  },
+  spec+: {
+    _pools+:: {},
+    pools+: [
+      self._pools[poolName] {
+        name: poolName,
+      }
+      for poolName in std.objectFields(self._pools)
+    ],
+  },
+};
+
+local loadbalancers = com.generateResources(params.loadbalancers, LoadBalancer);
 
 local secrets = com.generateResources(params.secrets, secret);
 
