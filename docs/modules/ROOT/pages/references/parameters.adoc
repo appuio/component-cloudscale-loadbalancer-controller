@@ -63,6 +63,13 @@ example::
 ----
 api:
   spec:
+    _floatingIPAddresses:
+      default:
+        address: 192.0.2.100
+        prefixlength: 32
+      partial: <1>
+        address: ""
+        prefixlength: 128
     _pools:
       https:
         frontend:
@@ -75,6 +82,7 @@ api:
           healthMonitor:
             type: TCP
 ----
+<1> Skipped by the rendering logic because `address` is `""`.
 
 Allows specifying load balancers.
 The dictionary keys are the load balancer names, and the values are the load balancer manifests.
@@ -82,6 +90,14 @@ The dictionary keys are the load balancer names, and the values are the load bal
 `.spec._pools` allows defining the load balancer pool configurations that can be overridden in the hierarchy.
 The `.spec._pools` dictionary keys are used as the pool names while the values are the pool configurations.
 `.spec._pools` are merged into the upstream `.spec.pools` configurations.
+
+`.spec._floatingIPAddresses` allows defining floating addresses that can be overridden and customized in the hierarchy.
+The `.spec._floatingIPAddresses` keys are ignored.
+Entries whose value isn't an object and entries whose `.address` is `null` or `""` are skipped.
+Other malformed entries may cause a compilation error.
+Values are rendered as `%(address)s/%(prefixlength)d` for field `cidr` in `spec.floatingIPAddresses` without validating that the resulting string is a valid floating IP in CIDR notation.
+`.spec._floatingIPAddresses` is merged into the provided `.spec.floatingIPAddresses` and duplicates are removed.
+The component doesn't guarantee any particular entry order for the final `.spec.floatingIPAddresses`.
 
 == `images`
 

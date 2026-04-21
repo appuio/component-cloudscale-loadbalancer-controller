@@ -19,6 +19,18 @@ parameters:
         spec:
           floatingIPAddresses:
             - cidr: 192.0.2.100/32
+            - cidr: 3fff::100/128
+          _floatingIPAddresses:
+            router-v4:
+              address: 192.0.2.100
+              prefixlength: 32
+            router-v6:
+              address: 3fff::1
+              prefixlength: 128
+            none: ~
+            not-configured:
+              address: ""
+              prefixlength: 128
           _pools:
             http:
               frontend:
