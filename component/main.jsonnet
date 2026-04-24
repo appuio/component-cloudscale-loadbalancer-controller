@@ -38,7 +38,16 @@ local LoadBalancer(name) = {
     namespace: params.namespace,
   },
   spec+: {
+    local this = self,
     _pools+:: {},
+    _floatingIPAddresses+:: {},
+    floatingIPAddresses+: [
+      { cidr: '%(address)s/%(prefixlength)d' % this._floatingIPAddresses[name] }
+      for name in std.objectFields(self._floatingIPAddresses)
+      if
+        std.isObject(self._floatingIPAddresses[name]) &&
+        !std.member([ null, '' ], self._floatingIPAddresses[name].address)
+    ],
     pools+: [
       self._pools[poolName] {
         name: poolName,
@@ -48,7 +57,22 @@ local LoadBalancer(name) = {
   },
 };
 
-local loadbalancers = com.generateResources(params.loadbalancers, LoadBalancer);
+// NOTE(sg): We need to remove duplicates after the call to
+// `com.generateResources()`, since doing this snippet in `LoadBalancer(name)`
+// doesn't see floating IPs configured via `_floatingIPAddresses` due to how
+// layered objects work in Jsonnet.
+local removeDuplicateFloatingIPAddresses(lb) = lb {
+  spec+: {
+    floatingIPAddresses: std.uniq(std.sort(
+      super.floatingIPAddresses, function(it) it.cidr
+    )),
+  },
+};
+
+local loadbalancers = std.map(
+  removeDuplicateFloatingIPAddresses,
+  com.generateResources(params.loadbalancers, LoadBalancer)
+);
 
 local secrets = com.generateResources(params.secrets, secret);
 
